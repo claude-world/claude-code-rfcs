@@ -141,6 +141,35 @@ Main Session（精簡）
 4. **可擴展性**：啟用 20+ MCP 伺服器而不會造成 context 壓力
 5. **低實作成本**：重用現有的 `context: fork` 基礎設施
 
+## 為什麼不直接放棄 MCP，改用 Skills + Scripts？
+
+有人可能會問：「既然 MCP 佔用這麼多 context，為什麼不直接用 Skills 包裝 API 呼叫？」
+
+**答案：認證管理是關鍵。**
+
+| 面向 | MCP | Skills + Scripts |
+|------|-----|------------------|
+| **認證管理** | 集中在 settings.json | 散落在 .env、scripts、環境變數 |
+| **安全性** | 環境隔離 | 容易外洩到 logs/shell history |
+| **Token 刷新** | 自動處理 | 需自己實作 |
+| **錯誤處理** | 標準化回應 | 各 API 不同 |
+| **維護成本** | MCP 上游更新 | 每個 script 都要維護 |
+
+**認證是最關鍵的問題：**
+
+```yaml
+# MCP 方式 - 乾淨且安全
+mcp: [github]
+# 認證在 settings.json，隔離，永不暴露
+
+# Script 方式 - 認證散落各處
+# 選項 1：.env 檔案（需要管理）
+# 選項 2：寫死在 script 裡（危險）
+# 選項 3：每次都要傳遞（繁瑣、易出錯）
+```
+
+MCP 的價值不只是工具本身——而是**集中且安全的認證管理**。Context 隔離保留了這個優勢，同時解決了 context 消耗的問題。
+
 ## 參考資料
 
 - [完整文章（claude-world.com）](https://claude-world.com/zh-tw/articles/mcp-lazy-loading)

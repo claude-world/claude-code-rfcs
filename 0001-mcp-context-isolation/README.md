@@ -196,6 +196,35 @@ Auto-load MCPs when certain keywords are mentioned.
 - Still loads into main context
 - Complex to configure
 
+### 4. Abandon MCP - Use Skills + Scripts (Direct API Calls)
+
+Wrap API calls in Skills using bash/curl instead of MCPs.
+
+**Rejected because:**
+
+| Aspect | MCP | Skills + Scripts |
+|--------|-----|------------------|
+| **Credential Management** | Centralized in settings.json | Scattered across .env, scripts, env vars |
+| **Security** | Environment isolation | Risk of exposure in logs/shell history |
+| **Token Refresh** | Handled automatically | Manual implementation required |
+| **Error Handling** | Standardized responses | Different per API |
+| **Maintenance** | MCP updates handled upstream | Must maintain each script |
+
+**The critical issue is authentication:**
+
+```yaml
+# MCP approach - Clean & Secure
+mcp: [github]
+# Credentials in settings.json, isolated, never exposed
+
+# Script approach - Credentials scattered everywhere
+# Option 1: .env file (needs management)
+# Option 2: Hardcoded in script (dangerous)
+# Option 3: Pass every time (tedious, error-prone)
+```
+
+MCP's value isn't just the tools—it's the **centralized, secure credential management**. Context Isolation preserves this benefit while solving the context consumption problem.
+
 ## Challenges
 
 | Challenge | Possible Solution |
